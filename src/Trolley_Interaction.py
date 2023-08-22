@@ -34,9 +34,9 @@ class trolley_functions():
         return productsURLList
         
         
-    def fetch_product_information(self, productsURLList):
+    def fetch_product_information(self, productsURL):
         
-        productPage = requests.get(productsURLList[0])
+        productPage = requests.get(productsURL)
 
         productPageSoup = BeautifulSoup(productPage.content, "html.parser")
 
@@ -58,10 +58,12 @@ class trolley_functions():
                 pass
             
         if 'productPrice' in locals() and 'supermarketName' in locals():
-                        
-            return productsURLList[0], supermarketName, productPrice.replace("£", '')
+            if productPrice.count("£") > 1:
+                # Some products have more than one price, formatted like this -> £3.00 £̶3̶.̶5̶0̶
+                productPrice = productPrice.split(" ")[0]
+            return productsURL, supermarketName, productPrice.replace("£", '')
         else:
-            return productsURLList[0]
+            return productsURL
     
     def url_encoder(self, url):
         return requote_uri(url)

@@ -26,15 +26,34 @@ def data_loop(productsJSON):
 
         # Fetch product info
         
-        availableProducts = trolleyFunctions.query_product_database(productName=itemName, sort="price")
-        productURL, supermarketName, price = trolleyFunctions.fetch_product_information(availableProducts)
+        availableProducts = trolleyFunctions.query_product_database(productName=itemName, sort="relevant")
         
-        print(f"{productURL}, {supermarketName}, {price}")
+        # Iterate throught the list and store the results in a json object, then find the cheapest price in that JSON object and use that data
+        availableProductsJSON = {"products": []}
+        for product in availableProducts:
+            tempJsonObj = {}
+            productURL, supermarketName, price = trolleyFunctions.fetch_product_information(product)
+            tempJsonObj["url"] = productURL
+            tempJsonObj["price"] = price
+            tempJsonObj["supermarketName"] = supermarketName
+            
+            availableProductsJSON["products"].append(tempJsonObj)
+            
+        # Find the cheapest product from this JSON obj
+        # High starting number
+        itemPrice = 1000000.0
+        itemURL = ""
+        itemSupermarketName = ""
+        for item in availableProductsJSON["products"]:
+            if float(item["price"]) < float(itemPrice):
+                itemPrice = item["price"]
+                itemURL = item["url"]
+                itemSupermarketName = item["supermarketName"]
         
         # forward these details to the Notion processor
-        notionFunctions.update_page(value=productURL, dataType="url", pageID=pageID)
-        notionFunctions.update_page(value=supermarketName, dataType="rich_text", pageID=pageID)
-        notionFunctions.update_page(value=price, dataType="number", pageID=pageID)
+        notionFunctions.update_page(value=itemURL, dataType="url", pageID=pageID)
+        notionFunctions.update_page(value=itemSupermarketName, dataType="rich_text", pageID=pageID)
+        notionFunctions.update_page(value=itemPrice, dataType="number", pageID=pageID)
         
 if __name__ == "__main__":
      

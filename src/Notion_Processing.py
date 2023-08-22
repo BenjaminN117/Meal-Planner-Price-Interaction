@@ -53,7 +53,7 @@ class processing():
         elif dataType == "rich_text":
             functions.update_rich_text_page_property(pageName=pageID, propertyName="Supermarket", value=value, bearerToken=self.NotionToken)
         elif dataType == "number":
-            print(functions.update_page_property(pageName=pageID, propertyName="Price", value=value, propertyType="number", bearerToken=self.NotionToken))
+            functions.update_page_property(pageName=pageID, propertyName="Price", value=float(value), propertyType="number", bearerToken=self.NotionToken)
         else:
             return "unknown data type"
         

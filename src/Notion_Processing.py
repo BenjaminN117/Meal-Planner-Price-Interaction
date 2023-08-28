@@ -1,3 +1,9 @@
+'''
+Product: Notion Processes
+Description: Interacts with the NotionAPI library 
+Author: Benjamin Norman 2023
+'''
+
 import json
 from NotionAPI import functions
 import os
@@ -12,7 +18,7 @@ class processing():
         Fetches the database values from the database ID using Notion API
         '''
         # Page size is set to the maximum
-        response = functions.get_database_values("b6649294692740c280fb8f49cece0147", 100, self.NotionToken)
+        response = functions.get_database_values(databaseID, 100, self.NotionToken)
         
         return response[1].decode('utf-8')
     
@@ -56,9 +62,3 @@ class processing():
             functions.update_page_property(pageName=pageID, propertyName="Price", value=float(value), propertyType="number", bearerToken=self.NotionToken)
         else:
             return "unknown data type"
-        
-
-if __name__ == "__main__":
-    
-    pass
-    

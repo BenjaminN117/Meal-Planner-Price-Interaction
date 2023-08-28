@@ -1,7 +1,7 @@
 '''
-Product:
-Description:
-Author:
+Product: Trolley Interactions
+Description: Scrapes data from trolley.co.uk
+Author: Benjamin Norman 2023
 '''
 
 import requests

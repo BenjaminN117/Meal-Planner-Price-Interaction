@@ -1,9 +1,10 @@
 '''
 Product: Main script
-Description:
+Description: Main script for runnung the price fetcher
 Author: Benjamin Norman 2023
 '''
 
+import time
 from Notion_Processing import processing
 from Trolley_Interaction import trolley_functions
 import os
@@ -32,12 +33,15 @@ def data_loop(productsJSON):
         availableProductsJSON = {"products": []}
         for product in availableProducts:
             tempJsonObj = {}
-            productURL, supermarketName, price = trolleyFunctions.fetch_product_information(product)
-            tempJsonObj["url"] = productURL
-            tempJsonObj["price"] = price
-            tempJsonObj["supermarketName"] = supermarketName
-            
-            availableProductsJSON["products"].append(tempJsonObj)
+            try:
+                productURL, supermarketName, price = trolleyFunctions.fetch_product_information(product)
+                tempJsonObj["url"] = productURL
+                tempJsonObj["price"] = price
+                tempJsonObj["supermarketName"] = supermarketName
+                
+                availableProductsJSON["products"].append(tempJsonObj)
+            except ValueError:
+                pass
             
         # Find the cheapest product from this JSON obj
         # High starting number
@@ -57,16 +61,19 @@ def data_loop(productsJSON):
         
 if __name__ == "__main__":
      
-    databaseID = "b6649294692740c280fb8f49cece0147"
-    
+    databaseID = os.environ['DATABASEID']
     notionFunctions = processing(os.environ['NOTIONTOKEN'])
-    trolleyFunctions = trolley_functions()
     
-    
-    # Fetch the dataset
-    
-    tableData = notionFunctions.fetch_data(databaseID=databaseID)
-    extractedData = notionFunctions.extract_data(tableData)
-    
-    
-    data_loop(extractedData)
+    while True:
+        
+        trolleyFunctions = trolley_functions()
+        
+        # Fetch the dataset
+        
+        tableData = notionFunctions.fetch_data(databaseID=databaseID)
+        extractedData = notionFunctions.extract_data(tableData)
+        
+        data_loop(extractedData)
+        
+        print("Timer started")
+        time.sleep(300)

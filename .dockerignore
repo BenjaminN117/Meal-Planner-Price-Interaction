@@ -1,0 +1,5 @@
+# Ignore git files
+
+.gitignore
+ReadMe.md
+LICENSE
